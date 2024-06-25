@@ -15,11 +15,36 @@ from oceancolor.hydrolight import loisel23
 from IPython import embed
 
 def rrs_func(uval:np.ndarray, G1:float, G2:float):
-    rrs = G1*uval + G2*uval**2
+    """
+    Calculate the remote sensing reflectance (RRS) using the given parameters.
+
+    Args:
+        uval (np.ndarray): Array of input values.
+        G1 (float): Coefficient for linear term.
+        G2 (float): Coefficient for quadratic term.
+
+    Returns:
+        np.ndarray: Array of calculated remote sensing reflectance (RRS) values.
+    """
+    rrs = G1 * uval + G2 * uval ** 2
     return rrs
 
 def fit_loisel23(outfile:str=None, X:int=4, Y:int=0, dw:int=1):
+    """
+    Fits the Loisel+2023 model to the given data and saves the results.
 
+    Args:
+        outfile (str): Path to the output file where the results will be saved. If not provided, a default path will be used.
+        X (int): X coordinate of the data to be loaded from Loisel+2023 dataset.
+        Y (int): Y coordinate of the data to be loaded from Loisel+2023 dataset.
+        dw (int): Step size for iterating over the wavelengths.
+
+    Returns:
+        tuple: 
+            waves (ndarray): Array of wavelengths.
+            save_ans (ndarray): Array of fitted coefficients.
+            save_cov (ndarray): Array of covariance matrices.
+    """
     if outfile is None:
         outfile = files('xiop').joinpath(
             os.path.join('data', 'qssa_fits.npz'))
@@ -70,6 +95,12 @@ def fit_loisel23(outfile:str=None, X:int=4, Y:int=0, dw:int=1):
     return np.array(waves), np.array(save_ans), np.array(save_cov)
 
 def spline_me():
+    """
+    Interpolates the data using splines and saves the coefficients to a NumPy archive.
+
+    Returns:
+        None
+    """
     # Load
     data_file = files('xiop').joinpath(
         os.path.join('data', 'qssa_fits.npz'))
@@ -89,7 +120,6 @@ def spline_me():
         os.path.join('data', 'qssa_bspline.npz'))
 
     # Save the coefficients to a NumPy archive
-    #embed(header='Breakpoint 92')
     np.savez(outfile, t_P1=bspline_p1.t, c_P1=bspline_p1.c, k_P1=bspline_p1.k,
                     t_P2=bspline_p2.t, c_P2=bspline_p2.c, k_P2=bspline_p2.k) 
     print(f'Saved to {outfile}')

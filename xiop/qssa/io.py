@@ -5,6 +5,12 @@ import numpy as np
 from scipy.interpolate import BSpline
 
 def load_qssa_bspline():
+    """
+    Load the QSSA B-spline data from a file and generate the corresponding B-spline objects.
+
+    Returns:
+        tuple: A tuple containing two B-spline objects, bspline_p1 and bspline_p2.
+    """
     # File
     bspline_file = files('xiop').joinpath(
         os.path.join('data', 'qssa_bspline.npz'))
