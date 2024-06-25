@@ -86,6 +86,7 @@ def fig_qssa_coeffs(outfile='fig_qssa_coeffs.png'):
 
     for ax in [ax_p1, ax_p2, ax_rms]:
         plotting.set_fontsize(ax, 15.)
+        ax.grid()
     
     #
     plt.tight_layout()#pad=0.0, h_pad=0.0, w_pad=0.3)
