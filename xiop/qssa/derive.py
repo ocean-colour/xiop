@@ -5,6 +5,10 @@ import os
 from importlib.resources import files
 
 from scipy.optimize import curve_fit
+from scipy.interpolate import BSpline
+from scipy.interpolate import make_interp_spline
+
+
 
 from oceancolor.hydrolight import loisel23
 
@@ -65,8 +69,35 @@ def fit_loisel23(outfile:str=None, X:int=4, Y:int=0, dw:int=1):
     
     return np.array(waves), np.array(save_ans), np.array(save_cov)
 
+def spline_me():
+    # Load
+    data_file = files('xiop').joinpath(
+        os.path.join('data', 'qssa_fits.npz'))
+    d = np.load(data_file)
+
+    # Unpack
+    wave = d['wave']
+    P1 = d['ans'][:,0]
+    P2 = d['ans'][:,1]
+
+    # Splines
+    bspline_p1 = make_interp_spline(wave, P1)
+    bspline_p2 = make_interp_spline(wave, P2)
+
+    # Save
+    outfile = files('xiop').joinpath(
+        os.path.join('data', 'qssa_bspline.npz'))
+
+    # Save the coefficients to a NumPy archive
+    #embed(header='Breakpoint 92')
+    np.savez(outfile, t_P1=bspline_p1.t, c_P1=bspline_p1.c, k_P1=bspline_p1.k,
+                    t_P2=bspline_p2.t, c_P2=bspline_p2.c, k_P2=bspline_p2.k) 
+    print(f'Saved to {outfile}')
 
 if __name__ == '__main__':
 
     # Fit em
-    fit_loisel23()
+    #fit_loisel23()
+
+    # Spline em
+    spline_me()

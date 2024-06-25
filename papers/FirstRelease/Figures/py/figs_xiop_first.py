@@ -22,6 +22,8 @@ from oceancolor.utils import plotting
 from oceancolor.hydrolight import loisel23
 from oceancolor.satellites import pace as sat_pace
 
+from xiop.qssa import io as qio
+
 # Local
 #sys.path.append(os.path.abspath("../Analysis/py"))
 #import anly_utils
@@ -46,13 +48,19 @@ def fig_qssa_coeffs(outfile='fig_qssa_coeffs.png'):
         os.path.join('data', 'qssa_fits.npz'))
     d = np.load(data_file)
 
+    bspline_p1, bspline_p2 = qio.load_qssa_bspline()
+
     # Unpack
     wave = d['wave']
     P1 = d['ans'][:,0]
     P2 = d['ans'][:,1]
     rms = d['rms']
 
+    waves = np.linspace(wave.min(), wave.max(), 1000)
+
     #
+    bspclr = 'k'
+
     fig = plt.figure(figsize=(7,9))
     gs = gridspec.GridSpec(3,1)
     plt.clf()
@@ -61,6 +69,9 @@ def fig_qssa_coeffs(outfile='fig_qssa_coeffs.png'):
     # P1
     ax_p1 = plt.subplot(gs[0])
     ax_p1.plot(wave, P1, 'o')
+
+    # Bspline
+    ax_p1.plot(waves, bspline_p1(waves), '-', color=bspclr)
 
     # Label
     ax_p1.set_ylabel(r'$P_1$')
@@ -71,6 +82,9 @@ def fig_qssa_coeffs(outfile='fig_qssa_coeffs.png'):
     # P2
     ax_p2 = plt.subplot(gs[1])
     ax_p2.plot(wave, P2, 'o', color='g')
+
+    # Bspline
+    ax_p2.plot(waves, bspline_p2(waves), '-', color=bspclr)
 
     # Label
     ax_p2.set_ylabel(r'$P_2$')
