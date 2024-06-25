@@ -48,12 +48,12 @@ def fig_qssa_coeffs(outfile='fig_qssa_coeffs.png'):
         os.path.join('data', 'qssa_fits.npz'))
     d = np.load(data_file)
 
-    bspline_p1, bspline_p2 = qio.load_qssa_bspline()
+    bspline_h1, bspline_h2 = qio.load_qssa_bspline()
 
     # Unpack
     wave = d['wave']
-    P1 = d['ans'][:,0]
-    P2 = d['ans'][:,1]
+    H1 = d['ans'][:,0]
+    H2 = d['ans'][:,1]
     rms = d['rms']
 
     waves = np.linspace(wave.min(), wave.max(), 1000)
@@ -66,29 +66,29 @@ def fig_qssa_coeffs(outfile='fig_qssa_coeffs.png'):
     plt.clf()
 
     # ##############################################3
-    # P1
-    ax_p1 = plt.subplot(gs[0])
-    ax_p1.plot(wave, P1, 'o')
+    # H1
+    ax_h1 = plt.subplot(gs[0])
+    ax_h1.plot(wave, H1, 'o')
 
     # Bspline
-    ax_p1.plot(waves, bspline_p1(waves), '-', color=bspclr)
+    ax_h1.plot(waves, bspline_h1(waves), '-', color=bspclr)
 
     # Label
-    ax_p1.set_ylabel(r'$P_1$')
-    ax_p1.tick_params(labelbottom=False)  # Hide x-axis labels
+    ax_h1.set_ylabel(r'$H_1$')
+    ax_h1.tick_params(labelbottom=False)  # Hide x-axis labels
 
 
     # ##############################################3
-    # P2
-    ax_p2 = plt.subplot(gs[1])
-    ax_p2.plot(wave, P2, 'o', color='g')
+    # H2
+    ax_h2 = plt.subplot(gs[1])
+    ax_h2.plot(wave, H2, 'o', color='g')
 
     # Bspline
-    ax_p2.plot(waves, bspline_p2(waves), '-', color=bspclr)
+    ax_h2.plot(waves, bspline_h2(waves), '-', color=bspclr)
 
     # Label
-    ax_p2.set_ylabel(r'$P_2$')
-    ax_p2.tick_params(labelbottom=False)  # Hide x-axis labels
+    ax_h2.set_ylabel(r'$H_2$')
+    ax_h2.tick_params(labelbottom=False)  # Hide x-axis labels
 
     # RMS
     ax_rms = plt.subplot(gs[2])
@@ -98,7 +98,7 @@ def fig_qssa_coeffs(outfile='fig_qssa_coeffs.png'):
     ax_rms.set_xlabel('Wavelength (nm)')
     ax_rms.set_ylabel('Relative RMS (%)')
 
-    for ax in [ax_p1, ax_p2, ax_rms]:
+    for ax in [ax_h1, ax_h2, ax_rms]:
         plotting.set_fontsize(ax, 15.)
         ax.grid()
     

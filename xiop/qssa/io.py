@@ -19,8 +19,8 @@ def load_qssa_bspline():
     d = np.load(bspline_file)
 
     # Generate the BSplines
-    bspline_p1 = BSpline(d['t_P1'], d['c_P1'], d['k_P1'])
-    bspline_p2 = BSpline(d['t_P2'], d['c_P2'], d['k_P2'])
+    bspline_p1 = BSpline(d['t_H1'], d['c_H1'], d['k_H1'])
+    bspline_p2 = BSpline(d['t_H2'], d['c_H2'], d['k_H2'])
 
     # Return
     return bspline_p1, bspline_p2

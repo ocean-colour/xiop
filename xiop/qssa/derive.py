@@ -108,20 +108,20 @@ def spline_me():
 
     # Unpack
     wave = d['wave']
-    P1 = d['ans'][:,0]
-    P2 = d['ans'][:,1]
+    H1 = d['ans'][:,0]
+    H2 = d['ans'][:,1]
 
     # Splines
-    bspline_p1 = make_interp_spline(wave, P1)
-    bspline_p2 = make_interp_spline(wave, P2)
+    bspline_p1 = make_interp_spline(wave, H1)
+    bspline_p2 = make_interp_spline(wave, H2)
 
     # Save
     outfile = files('xiop').joinpath(
         os.path.join('data', 'qssa_bspline.npz'))
 
     # Save the coefficients to a NumPy archive
-    np.savez(outfile, t_P1=bspline_p1.t, c_P1=bspline_p1.c, k_P1=bspline_p1.k,
-                    t_P2=bspline_p2.t, c_P2=bspline_p2.c, k_P2=bspline_p2.k) 
+    np.savez(outfile, t_H1=bspline_p1.t, c_H1=bspline_p1.c, k_H1=bspline_p1.k,
+                    t_H2=bspline_p2.t, c_H2=bspline_p2.c, k_H2=bspline_p2.k) 
     print(f'Saved to {outfile}')
 
 if __name__ == '__main__':
