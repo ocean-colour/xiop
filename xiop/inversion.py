@@ -11,7 +11,7 @@ def find_lambdar(wave:np.ndarray, rrs:np.ndarray):
 
     return 550. # nm
 
-def quadratic(wave:np.ndarray, rrs:np.ndarray):
+def quadratic(wave:np.ndarray, rrs:np.ndarray, H1:np.ndarray=None, H2:np.ndarray=None):
     """
     Perform quadratic inversion to calculate the D value.
 
@@ -26,20 +26,23 @@ def quadratic(wave:np.ndarray, rrs:np.ndarray):
     Parameters:
         wave (np.ndarray): Array of wavelengths.
         rrs (np.ndarray): Array of remote sensing reflectance values.
+        H1 (np.ndarray, optional): Array of H1 values.
+        H2 (np.ndarray, optional): Array of H2 values.
 
     Returns:
         D (np.ndarray): Array of calculated D values.
     """
-    # Load the Bsplines
-    bspline_p1, bspline_p2 = load_qssa_bspline()
-    
-    # Evaulate the coefficients
-    H1 = bspline_p1(wave)
-    H2 = bspline_p2(wave)
+    if H1 is None:
+        # Load the Bsplines
+        bspline_p1, bspline_p2 = load_qssa_bspline()
+        
+        # Evaulate the coefficients
+        H1 = bspline_p1(wave)
+        H2 = bspline_p2(wave)
 
     # Quadratic equation
     sq = np.sqrt(H1**2 + 4*H2*rrs)
-    upos = (-H1 + sq)/(2*H2)
+    upos = (-1*H1 + sq)/(2*H2)
 
     # Query for positive values
     bad = upos < 0
