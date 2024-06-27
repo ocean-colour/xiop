@@ -4,6 +4,34 @@ from importlib.resources import files
 import numpy as np
 from scipy.interpolate import BSpline
 
+def fits_filename(dataset:str, extras:dict):
+
+    if dataset == 'loisel23':
+        exs = f'_X{extras["X"]}Y{extras["Y"]}'
+    else:
+        exs = ''
+
+    base = f'qssa_fits_{dataset}{exs}.npz'
+    filename = files('xiop').joinpath(
+        os.path.join('data', base))
+
+    # Return
+    return filename
+
+def bspline_filename(dataset:str, extras:dict):
+
+    if dataset == 'loisel23':
+        exs = f'_X{extras["X"]}Y{extras["Y"]}'
+    else:
+        exs = ''
+
+    base = f'qssa_bspline_{dataset}{exs}.npz'
+    filename = files('xiop').joinpath(
+        os.path.join('data', base))
+
+    # Return
+    return filename
+    
 def load_qssa_bspline():
     """
     Load the QSSA B-spline data from a file and generate the corresponding B-spline objects.
