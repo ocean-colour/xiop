@@ -11,6 +11,7 @@ from scipy.interpolate import make_interp_spline
 from oceancolor.hydrolight import loisel23
 
 from xiop import geometric
+from xiop.qssa import io as qio
 
 from IPython import embed
 
@@ -46,8 +47,8 @@ def fit_loisel23(outfile:str=None, X:int=4, Y:int=0, dw:int=1):
             save_cov (ndarray): Array of covariance matrices.
     """
     if outfile is None:
-        outfile = files('xiop').joinpath(
-            os.path.join('data', 'qssa_fits.npz'))
+        extras = {'X':X, 'Y':Y}
+        outfile = qio.fits_filename('loisel23', extras)
 
     # Load Loisel+2023
     l23_ds = loisel23.load_ds(X,Y)
@@ -93,7 +94,7 @@ def fit_loisel23(outfile:str=None, X:int=4, Y:int=0, dw:int=1):
     
     return np.array(waves), np.array(save_ans), np.array(save_cov)
 
-def spline_me():
+def spline_me(X:int=4, Y:int=0):
     """
     Interpolates the data using splines and saves the coefficients to a NumPy archive.
 
@@ -101,8 +102,7 @@ def spline_me():
         None
     """
     # Load
-    data_file = files('xiop').joinpath(
-        os.path.join('data', 'qssa_fits.npz'))
+    data_file = qio.fits_filename('loisel23', {'X':X, 'Y':Y})
     d = np.load(data_file)
 
     # Unpack
@@ -115,8 +115,7 @@ def spline_me():
     bspline_p2 = make_interp_spline(wave, H2)
 
     # Save
-    outfile = files('xiop').joinpath(
-        os.path.join('data', 'qssa_bspline.npz'))
+    outfile = qio.bspline_filename('loisel23', {'X':X, 'Y':Y})
 
     # Save the coefficients to a NumPy archive
     np.savez(outfile, t_H1=bspline_p1.t, c_H1=bspline_p1.c, k_H1=bspline_p1.k,
@@ -125,8 +124,8 @@ def spline_me():
 
 if __name__ == '__main__':
 
-    # Fit em
-    #fit_loisel23()
-
-    # Spline em
-    spline_me()
+    for X in [1,4]:
+        # Fit em
+        fit_loisel23(X=X,Y=0)
+        # Spline em
+        spline_me(X=X,Y=0)
