@@ -35,7 +35,9 @@ def gen_cb(img, lbl, csz = 17.):
     cbaxes.set_label(lbl, fontsize=csz)
     cbaxes.ax.tick_params(labelsize=csz)
 
-def fig_qssa_coeffs(outfile='fig_qssa_coeffs.png'):
+def fig_qssa_coeffs(outroot='fig_qssa_coeffs', 
+                    dataset:str='loisel23', 
+                    extras={'X':1, 'Y':0}):
     """
     Generate a figure showing the QSSA coefficients derived from Loisel+2023.
 
@@ -43,12 +45,13 @@ def fig_qssa_coeffs(outfile='fig_qssa_coeffs.png'):
         outfile (str): The filename of the output figure (default: 'fig_u.png')
 
     """
+    outfile = f'{outroot}_{dataset}.png'
     # Load
-    data_file = files('xiop').joinpath(
-        os.path.join('data', 'qssa_fits.npz'))
+    data_file = qio.fits_filename(dataset, extras)
     d = np.load(data_file)
 
-    bspline_h1, bspline_h2 = qio.load_qssa_bspline()
+    bspline_h1, bspline_h2 = qio.load_qssa_bspline(
+        dataset, extras)
 
     # Unpack
     wave = d['wave']
