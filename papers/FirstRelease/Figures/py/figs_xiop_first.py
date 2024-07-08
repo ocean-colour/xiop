@@ -18,9 +18,9 @@ import seaborn as sns
 
 import corner
 
-from oceancolor.utils import plotting 
-from oceancolor.hydrolight import loisel23
-from oceancolor.satellites import pace as sat_pace
+from ocpy.utils import plotting 
+from ocpy.hydrolight import loisel23
+from ocpy.satellites import pace as sat_pace
 
 from xiop.qssa import io as qio
 
