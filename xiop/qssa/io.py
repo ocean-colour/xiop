@@ -5,6 +5,16 @@ import numpy as np
 from scipy.interpolate import BSpline
 
 def fits_filename(dataset:str, extras:dict):
+    """
+    Generate a filename for a FITS dataset.
+
+    Args:
+        dataset (str): The name of the dataset.
+        extras (dict): A dictionary containing extra parameters.
+
+    Returns:
+        str: The generated filename for the FITS dataset.
+    """
 
     if dataset == 'loisel23':
         exs = f'_X{extras["X"]}Y{extras["Y"]}'
