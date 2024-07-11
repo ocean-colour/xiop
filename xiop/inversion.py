@@ -12,6 +12,17 @@ def find_lambdar(wave:np.ndarray, rrs:np.ndarray):
     return 550. # nm
             
 def calc_Hcoeff(wave:np.ndarray, dataset:str, extras:dict):
+    """
+    Calculate the H1 and H2 coefficients using B-splines.
+
+    Parameters:
+        wave (np.ndarray): Array of wave values.
+        dataset (str): Name of the dataset.
+        extras (dict): Extra parameters.
+
+    Returns:
+        tuple: A tuple containing the H1 and H2 coefficients.
+    """
     # Load the Bsplines
     bspline_p1, bspline_p2 = load_qssa_bspline(dataset, extras)
     
