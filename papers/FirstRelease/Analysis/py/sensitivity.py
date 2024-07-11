@@ -4,8 +4,8 @@ import numpy as np
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from oceancolor.hydrolight import loisel23
-from oceancolor.utils import plotting
+from ocpy.hydrolight import loisel23
+from ocpy.utils import plotting
 
 from bing import rt
 
@@ -120,5 +120,5 @@ def fig_sens(wave:np.ndarray, all_rdiffs:list,
 
 if __name__ == '__main__':
 
-    #sensitivity_to_H1()
+    sensitivity_to_H1()
     sensitivity_to_H2()
