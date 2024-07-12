@@ -71,9 +71,26 @@ def quadratic(rrs:np.ndarray,
     # Return
     return D
 
-def retrieve_anw(aw:np.ndarray, bbw:np.ndarray, D:np.ndarray):
+def retrieve_anw(aw:np.ndarray, bbw:np.ndarray, D:np.ndarray,
+                 avgbbnw:float=None):
+    """
+    Retrieve the absorption coefficient of non-water 
+        (anw) using the given parameters.
+
+    Parameters:
+        aw (np.ndarray): Array of absorption coefficients of water.
+        bbw (np.ndarray): Array of backscattering coefficients of water.
+        D (np.ndarray): Array of depths.
+        avgbbnw (float, optional): Average backscattering coefficient of pure water.
+
+    Returns:
+        np.ndarray: Array of retrieved absorption coefficients of non-water (anw).
+    """
 
     anw = D*bbw - aw
+
+    if avgbbnw is not None:
+        anw += avgbbnw*D
 
     return anw
 

@@ -12,10 +12,12 @@ from xiop import inversion
 
 from IPython import embed
 
-def stats(extras={'X':1, 'Y':0}):
+def stats(dataset:str='loisel23', extras:dict={'X':1, 'Y':0}, 
+          bbnw_corr:str='none'):
+
+    outfile = f'stats_{dataset}_{bbnw_corr}.png'
 
     # Load
-    dataset = 'loisel23'
     l23_ds = loisel23.load_ds(extras['X'], extras['Y'])
 
     # Unpack
@@ -27,6 +29,7 @@ def stats(extras={'X':1, 'Y':0}):
     
     a_wvs = (l23_wave > 400.) & (l23_wave < 450.)
     bb_wvs = l23_wave > 600.
+    avgbb_wvs = (l23_wave > 600.) & (l23_wave < 650.)
 
     # Water
     aw = (l23_ds.a.data - l23_ds.anw.data)[0]
@@ -51,7 +54,19 @@ def stats(extras={'X':1, 'Y':0}):
         D = inversion.quadratic(rrs, H1, H2)
 
         bbnw = inversion.retrieve_bbnw(aw, bbw, D)
-        anw = inversion.retrieve_anw(aw, bbw, D)
+        if bbnw_corr == 'mean':
+            avgbbnw = np.nanmean(bbnw[avgbb_wvs])
+        elif bbnw_corr == 'pow':
+            avgbbnw = np.nanmean(bbnw[avgbb_wvs])
+            powbbnw = avgbbnw*(l23_wave[bb_wvs]/
+                       np.mean(l23_wave[avgbb_wvs]))**(-1)
+            corr_bbnw
+        elif bbnw_corr == 'none':
+            avgbbnw = 0.
+        else:
+            raise ValueError(f"Bad bbnw_corr: {bbnw_corr}")
+        anw = inversion.retrieve_anw(aw, bbw, D, 
+                                     bbnw_corr=avgbbnw)
 
         # Stats
         roff_a.append( np.nanmedian(((anw - anw_true)/anw_true)[a_wvs]))
@@ -66,6 +81,9 @@ def stats(extras={'X':1, 'Y':0}):
     axs[0].set_title('anw')
     axs[1].hist(100*roff_bb, bins=50, color='r', alpha=0.5)
     axs[1].set_title('bbnw')
+    # Text
+    axs[0].text(0.05, 0.9, f'bbnw corr: {bbnw_corr}', 
+                transform=axs[0].transAxes, fontsize=15)
     # Label
     axs[0].set_xlabel(r'$a_{\rm nw}$: Relative Offset [%]')
     axs[1].set_xlabel(r'$b_{\rm b,nw}$: Relative Offset [%]')
@@ -75,7 +93,6 @@ def stats(extras={'X':1, 'Y':0}):
         ax.axvline(0, color='k', linestyle='--')
         plotting.set_fontsize(ax, 15.)
     
-    outfile = f'stats_{dataset}.png'
     plt.tight_layout()
     plt.savefig(outfile, dpi=300)
     print(f'Saved: {outfile}')
@@ -85,4 +102,5 @@ def stats(extras={'X':1, 'Y':0}):
 if __name__ == '__main__':
 
     # bbnw
-    stats()
+    #stats()
+    stats(bbwn_corr='mean')
