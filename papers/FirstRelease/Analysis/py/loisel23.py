@@ -55,18 +55,19 @@ def stats(dataset:str='loisel23', extras:dict={'X':1, 'Y':0},
 
         bbnw = inversion.retrieve_bbnw(aw, bbw, D)
         if bbnw_corr == 'mean':
-            avgbbnw = np.nanmean(bbnw[avgbb_wvs])
+            corr_bbnw = np.nanmean(bbnw[avgbb_wvs])
         elif bbnw_corr == 'pow':
             avgbbnw = np.nanmean(bbnw[avgbb_wvs])
-            powbbnw = avgbbnw*(l23_wave[bb_wvs]/
-                       np.mean(l23_wave[avgbb_wvs]))**(-1)
-            corr_bbnw
+            corr_bbnw = avgbbnw*(l23_wave/np.mean(l23_wave[avgbb_wvs]))**(-1)
         elif bbnw_corr == 'none':
-            avgbbnw = 0.
+            corr_bbnw = 0.
         else:
             raise ValueError(f"Bad bbnw_corr: {bbnw_corr}")
+
+        #embed(header='47 of loisel23.py: stats()')
+        # anw
         anw = inversion.retrieve_anw(aw, bbw, D, 
-                                     bbnw_corr=avgbbnw)
+                                     corr_bbnw=corr_bbnw)
 
         # Stats
         roff_a.append( np.nanmedian(((anw - anw_true)/anw_true)[a_wvs]))
@@ -103,4 +104,5 @@ if __name__ == '__main__':
 
     # bbnw
     #stats()
-    stats(bbwn_corr='mean')
+    #stats(bbnw_corr='mean')
+    stats(bbnw_corr='pow')
