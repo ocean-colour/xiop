@@ -75,6 +75,9 @@ def stats(dataset:str='loisel23', extras:dict={'X':1, 'Y':0},
     roff_a = np.array(roff_a)
     roff_bb = np.array(roff_bb)
 
+    # More stats
+    rms_a = np.sqrt(np.mean(roff_a**2))
+    rms_bb = np.sqrt(np.mean(roff_bb**2))
 
     # Shwo simple histograms of each of these
     fig, axs = plt.subplots(1, 2, figsize=(10, 5))
@@ -83,8 +86,17 @@ def stats(dataset:str='loisel23', extras:dict={'X':1, 'Y':0},
     axs[1].hist(100*roff_bb, bins=50, color='r', alpha=0.5)
     axs[1].set_title('bbnw')
     # Text
-    axs[0].text(0.05, 0.9, f'bbnw corr: {bbnw_corr}', 
-                transform=axs[0].transAxes, fontsize=15)
+    axs[0].text(0.95, 0.9, f'bbnw corr: {bbnw_corr}', 
+                transform=axs[0].transAxes, fontsize=15,
+                ha='right')
+    # RMS text
+    axs[0].text(0.95, 0.8, f'RMS: {100*rms_a:.2f}%', 
+                transform=axs[0].transAxes, fontsize=15,
+                ha='right')
+    axs[1].text(0.95, 0.8, f'RMS: {100*rms_bb:.2f}%', 
+                transform=axs[1].transAxes, fontsize=15,
+                ha='right')
+                
     # Label
     axs[0].set_xlabel(r'$a_{\rm nw}$: Relative Offset [%]')
     axs[1].set_xlabel(r'$b_{\rm b,nw}$: Relative Offset [%]')
