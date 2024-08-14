@@ -5,6 +5,16 @@ import numpy as np
 from scipy.interpolate import BSpline
 
 def fits_filename(dataset:str, extras:dict):
+    """
+    Generate a filename for a FITS dataset.
+
+    Args:
+        dataset (str): The name of the dataset.
+        extras (dict): A dictionary containing extra parameters.
+
+    Returns:
+        str: The generated filename for the FITS dataset.
+    """
 
     if dataset == 'loisel23':
         exs = f'_X{extras["X"]}Y{extras["Y"]}'
@@ -32,7 +42,7 @@ def bspline_filename(dataset:str, extras:dict):
     # Return
     return filename
     
-def load_qssa_bspline():
+def load_qssa_bspline(dataset:str, extras:dict):
     """
     Load the QSSA B-spline data from a file and generate the corresponding B-spline objects.
 
@@ -40,8 +50,7 @@ def load_qssa_bspline():
         tuple: A tuple containing two B-spline objects, bspline_p1 and bspline_p2.
     """
     # File
-    bspline_file = files('xiop').joinpath(
-        os.path.join('data', 'qssa_bspline.npz'))
+    bspline_file = bspline_filename(dataset, extras)
 
     # Load
     d = np.load(bspline_file)

@@ -10,6 +10,7 @@ from scipy.interpolate import make_interp_spline
 
 from oceancolor.hydrolight import loisel23
 
+from xiop import geometric
 from xiop.qssa import io as qio
 
 from IPython import embed
@@ -62,8 +63,7 @@ def fit_loisel23(outfile:str=None, X:int=4, Y:int=0, dw:int=1):
     u = bb / (a+bb)
 
     # rrs
-    A, B = 0.52, 1.17  # Lee+2002
-    rrs = l23_Rrs / (A + B*l23_Rrs)
+    rrs = geometric.rrs_from_Rrs(l23_Rrs)
 
     # Loop on every 3 points + the last
     save_ans = []
