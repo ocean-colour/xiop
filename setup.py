@@ -22,12 +22,12 @@ setup_keywords = dict()
 #
 # THESE SETTINGS NEED TO BE CHANGED FOR EVERY PRODUCT.
 #
-setup_keywords['name'] = 'XIOP'
-setup_keywords['description'] = "X's Inherent Optical Properties retrieval (XIOP) package"
+setup_keywords['name'] = 'XQAA'
+setup_keywords['description'] = "X's Inherent Optical Properties retrieval (XQAA) package"
 setup_keywords['author'] = 'J. Xavier Prochaska'
 setup_keywords['author_email'] = 'jxp@ucsc.edu'
 setup_keywords['license'] = 'BSD'
-setup_keywords['url'] = 'https://github.com/AI-for-Ocean-Science/xiop'
+setup_keywords['url'] = 'https://github.com/AI-for-Ocean-Science/xqaa'
 
 #
 # END OF SETTINGS THAT NEED TO BE CHANGED.
