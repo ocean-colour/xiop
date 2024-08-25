@@ -53,12 +53,12 @@ def bspline_filename(params:xqaa_params.XQAAParams):
     # Return
     return filename
     
-def load_qssa_bspline(params:dict):
+def load_qssa_bspline(params:xqaa_params.XQAAParams):
     """
     Load the QSSA B-spline data from a file and generate the corresponding B-spline objects.
 
     Parameters:
-        params (dict): Dictionary of parameters.
+        params (XQAAParams): The parameters for the XQAA model.
 
     Returns:
         tuple: A tuple containing two B-spline objects, bspline_p1 and bspline_p2.
