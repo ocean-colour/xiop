@@ -35,6 +35,13 @@ class XQAAParams(myDataClass):
             "Notation": "b_{\\rm b,max}",
         },
     )
+    bbnw_corr: str = field(
+        default="pow",
+        metadata={
+            "help": "Correction for backscattering coefficient of non-water",
+            "options": ["none", "mean", "pow"],
+        },
+    )
     amin: float = field(
         default=400.0,
         metadata={

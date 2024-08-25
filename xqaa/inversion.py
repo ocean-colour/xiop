@@ -2,6 +2,7 @@
 import numpy as np
 
 from xqaa.qssa.io import load_qssa_bspline
+from xqaa import params as xqaa_params
 
 '''
 def find_lambdab(wave:np.ndarray, rrs:np.ndarray):
@@ -13,19 +14,19 @@ def find_lambdar(wave:np.ndarray, rrs:np.ndarray):
     return 550. # nm
 '''
             
-def calc_Hcoeff(wave:np.ndarray, params:dict):
+def calc_Hcoeff(wave:np.ndarray, xparams:xqaa_params.XQAAParams):
     """
     Calculate the H1 and H2 coefficients using B-splines.
 
     Parameters:
         wave (np.ndarray): Array of wave values.
-        params (dict): Dictionary of parameters.
+        xpars (XQAAParams): The parameters for the XQAA model.
 
     Returns:
         tuple: A tuple containing the H1 and H2 coefficients.
     """
     # Load the Bsplines
-    bspline_p1, bspline_p2 = load_qssa_bspline(params)
+    bspline_p1, bspline_p2 = load_qssa_bspline(xparams)
     
     # Evaulate the coefficients
     H1 = bspline_p1(wave)
