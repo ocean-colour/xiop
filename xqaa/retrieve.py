@@ -1,7 +1,8 @@
 """ Methods for the XQAA retrieval """
+import warnings
 
 import numpy as np
-import warnings
+from scipy.interpolate import interp1d
 
 from ocpy.water import absorption
 from ocpy.hydrolight import loisel23
@@ -29,7 +30,10 @@ def iops_from_Rrs(wave:np.ndarray, Rrs:np.ndarray,
 
     warnings.warn("Need to implement b_w")
     l23_ds = loisel23.load_ds(4,0)
-    bbw = (l23_ds.bb.data - l23_ds.bbnw.data)[0]
+    l23_bbw = (l23_ds.bb.data - l23_ds.bbnw.data)[0]
+    f = interp1d(l23_ds.Lambda.data, l23_bbw, kind='linear')
+                    #bounds_error=False, fill_value='extrapolate')
+    bbw = f(wave)
 
     # rrs
     rrs = xqaa_geom.rrs_from_Rrs(Rrs)
