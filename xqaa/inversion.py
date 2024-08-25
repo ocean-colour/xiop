@@ -1,8 +1,9 @@
 """ Algorithms related to the Inversion """
 import numpy as np
 
-from xiop.qssa.io import load_qssa_bspline
+from xqaa.qssa.io import load_qssa_bspline
 
+'''
 def find_lambdab(wave:np.ndarray, rrs:np.ndarray):
 
     return 440. # nm
@@ -10,21 +11,21 @@ def find_lambdab(wave:np.ndarray, rrs:np.ndarray):
 def find_lambdar(wave:np.ndarray, rrs:np.ndarray):
 
     return 550. # nm
+'''
             
-def calc_Hcoeff(wave:np.ndarray, dataset:str, extras:dict):
+def calc_Hcoeff(wave:np.ndarray, params:dict):
     """
     Calculate the H1 and H2 coefficients using B-splines.
 
     Parameters:
         wave (np.ndarray): Array of wave values.
-        dataset (str): Name of the dataset.
-        extras (dict): Extra parameters.
+        params (dict): Dictionary of parameters.
 
     Returns:
         tuple: A tuple containing the H1 and H2 coefficients.
     """
     # Load the Bsplines
-    bspline_p1, bspline_p2 = load_qssa_bspline(dataset, extras)
+    bspline_p1, bspline_p2 = load_qssa_bspline(params)
     
     # Evaulate the coefficients
     H1 = bspline_p1(wave)
@@ -97,7 +98,20 @@ def retrieve_anw(aw:np.ndarray, bbw:np.ndarray, D:np.ndarray,
     return anw
 
 def retrieve_bbnw(aw:np.ndarray, bbw:np.ndarray, D:np.ndarray):
+    """
+    Retrieves the backscattering coefficient of non-water particles (bbnw) using the absorption coefficient of water (aw),
+    the backscattering coefficient of water (bbw), and the depth (D).
 
+    Parameters:
+        aw (np.ndarray): Array of absorption coefficients of water.
+        bbw (np.ndarray): Array of backscattering coefficients of water.
+        D (np.ndarray): Array of D
+
+    Returns:
+        bbnw (np.ndarray): Array of backscattering coefficients of non-water particles.
+
+    """
+    # Simple algebra
     bbnw = aw/D - bbw
 
     return bbnw
