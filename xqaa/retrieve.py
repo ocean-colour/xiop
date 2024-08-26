@@ -11,6 +11,8 @@ from xqaa.params import XQAAParams
 from xqaa import geometric as xqaa_geom
 from xqaa import inversion
 
+from IPython import embed
+
 def iops_from_Rrs(wave:np.ndarray, Rrs:np.ndarray, 
                   xparams:XQAAParams):
     """
@@ -47,11 +49,12 @@ def iops_from_Rrs(wave:np.ndarray, Rrs:np.ndarray,
     avgbb_wvs = (wave > xparams.bbmin) & (wave < xparams.bbmax)
 
     # Find the correction to use for anw
+    avg_bbnw = np.nanmean(bbnw[avgbb_wvs])
     if xparams.bbnw_corr == 'mean':
-        corr_bbnw = np.nanmean(bbnw[avgbb_wvs])
+        corr_bbnw = avg_bbnw
     elif xparams.bbnw_corr == 'pow':
-        avgbbnw = np.nanmean(bbnw[avgbb_wvs])
-        corr_bbnw = avgbbnw*(wave/np.mean(wave[avgbb_wvs]))**(-1)
+        corr_bbnw = avg_bbnw*(wave/np.mean(wave[avgbb_wvs]))**(-1)
+        #embed(header='iops_from_Rrs 70')
     elif xparams.bbnw_corr == 'none':
         corr_bbnw = 0.
     else:
@@ -62,4 +65,4 @@ def iops_from_Rrs(wave:np.ndarray, Rrs:np.ndarray,
                                  corr_bbnw=corr_bbnw)
 
     # Return
-    return anw, bbnw
+    return anw, corr_bbnw, avg_bbnw

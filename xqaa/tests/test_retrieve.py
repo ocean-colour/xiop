@@ -18,13 +18,14 @@ def test_iop_from_Rrs():
     df = pandas.read_csv('files/test_Rrs.csv')
 
     # Call the function
-    anw, bbnw = retrieve.iops_from_Rrs(
+    anw, bbnw, avg_bbnw = retrieve.iops_from_Rrs(
         df.wave.values, df.Rrs.values, xqaaParams)
 
     # Check the values
     #pytest.set_trace()
     assert np.isclose(anw[-1], 0.361059, atol=1e-5)
     assert np.isclose(bbnw[-1], 0.000549, atol=1e-5)
+    assert np.isclose(avg_bbnw, 0.0007784291720040593)
 
 '''
 from ocpy.hydrolight import loisel23
