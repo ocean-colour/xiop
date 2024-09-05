@@ -6,24 +6,25 @@ from scipy.interpolate import BSpline
 
 from xqaa import params as xqaa_params
 
-def fits_filename(dataset:str, extras:dict):
+def fits_filename(params:xqaa_params.XQAAParams):
     """
     Generate a filename for a FITS dataset.
 
     Args:
-        dataset (str): The name of the dataset.
-        extras (dict): A dictionary containing extra parameters.
+        params (XQAAParams): The parameters for the XQAA model.
+            dataset (str): The name of the dataset.
+            extras (dict): A dictionary containing extra parameters.
 
     Returns:
         str: The generated filename for the FITS dataset.
     """
 
-    if dataset == 'loisel23':
-        exs = f'_X{extras["X"]}Y{extras["Y"]}'
+    if params.dataset == 'loisel23':
+        exs = f'_X{params.L23_X}Y{params.L23_Y}'
     else:
         exs = ''
 
-    base = f'qssa_fits_{dataset}{exs}.npz'
+    base = f'qssa_fits_{params.dataset}{exs}.npz'
     filename = files('xqaa').joinpath(
         os.path.join('data', base))
 

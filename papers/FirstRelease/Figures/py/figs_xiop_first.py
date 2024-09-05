@@ -1,28 +1,18 @@
 """ Figs for XIOP """
 import os, sys
-from importlib.resources import files
 
 import numpy as np
-
-from scipy.optimize import curve_fit
-from scipy.stats import sigmaclip
-import pandas
-
 
 from matplotlib import pyplot as plt
 import matplotlib as mpl
 import matplotlib.gridspec as gridspec
 mpl.rcParams['font.family'] = 'stixgeneral'
 
-import seaborn as sns
-
-import corner
 
 from ocpy.utils import plotting 
-from ocpy.hydrolight import loisel23
-from ocpy.satellites import pace as sat_pace
 
-from xiop.qssa import io as qio
+from xqaa.qssa import io as qio
+from xqaa import params as xqaa_params
 
 # Local
 #sys.path.append(os.path.abspath("../Analysis/py"))
@@ -37,7 +27,8 @@ def gen_cb(img, lbl, csz = 17.):
 
 def fig_qssa_coeffs(outroot='fig_qssa_coeffs', 
                     dataset:str='loisel23', 
-                    extras={'X':1, 'Y':0}):
+                    extras={'X':1, 'Y':0},
+                    layout='vertical'):
     """
     Generate a figure showing the QSSA coefficients derived from Loisel+2023.
 
@@ -45,18 +36,25 @@ def fig_qssa_coeffs(outroot='fig_qssa_coeffs',
         outfile (str): The filename of the output figure (default: 'fig_u.png')
 
     """
+    # Parameters
+    if dataset != 'loisel23':
+        raise ValueError("Only Loisel23 dataset is supported") 
+    xqaaParams = xqaa_params.XQAAParams()
+    xqaaParams.L23_X = extras['X']
+    xqaaParams.L23_Y = extras['Y']
+
+
     outfile = f'{outroot}_{dataset}.png'
     # Load
-    data_file = qio.fits_filename(dataset, extras)
+    data_file = qio.fits_filename(xqaaParams)
     d = np.load(data_file)
 
-    bspline_h1, bspline_h2 = qio.load_qssa_bspline(
-        dataset, extras)
+    bspline_g1, bspline_g2 = qio.load_qssa_bspline(xqaaParams)
 
     # Unpack
     wave = d['wave']
-    H1 = d['ans'][:,0]
-    H2 = d['ans'][:,1]
+    G1 = d['ans'][:,0]
+    G2 = d['ans'][:,1]
     rms = d['rms']
 
     waves = np.linspace(wave.min(), wave.max(), 1000)
@@ -64,46 +62,53 @@ def fig_qssa_coeffs(outroot='fig_qssa_coeffs',
     #
     bspclr = 'k'
 
-    fig = plt.figure(figsize=(7,9))
-    gs = gridspec.GridSpec(3,1)
+    if layout == 'horizontal':
+        fig = plt.figure(figsize=(12,4))
+        gs = gridspec.GridSpec(1,3)
+    else:
+        fig = plt.figure(figsize=(7,9))
+        gs = gridspec.GridSpec(3,1)
     plt.clf()
 
     # ##############################################3
-    # H1
-    ax_h1 = plt.subplot(gs[0])
-    ax_h1.plot(wave, H1, 'o')
+    # G1
+    ax_g1 = plt.subplot(gs[0])
+    ax_g1.plot(wave, G1, 'o')
 
     # Bspline
-    ax_h1.plot(waves, bspline_h1(waves), '-', color=bspclr)
+    ax_g1.plot(waves, bspline_g1(waves), '-', color=bspclr)
 
     # Label
-    ax_h1.set_ylabel(r'$H_1$')
-    ax_h1.tick_params(labelbottom=False)  # Hide x-axis labels
+    ax_g1.set_ylabel(r'$G_1$')
+    if layout == 'vertical':
+        ax_g1.tick_params(labelbottom=False)  # Hide x-axis labels
 
 
     # ##############################################3
-    # H2
-    ax_h2 = plt.subplot(gs[1])
-    ax_h2.plot(wave, H2, 'o', color='g')
+    # G2
+    ax_g2 = plt.subplot(gs[1])
+    ax_g2.plot(wave, G2, 'o', color='g')
 
     # Bspline
-    ax_h2.plot(waves, bspline_h2(waves), '-', color=bspclr)
+    ax_g2.plot(waves, bspline_g2(waves), '-', color=bspclr)
 
     # Label
-    ax_h2.set_ylabel(r'$H_2$')
-    ax_h2.tick_params(labelbottom=False)  # Hide x-axis labels
+    ax_g2.set_ylabel(r'$G_2$')
+    if layout == 'vertical':
+        ax_g2.tick_params(labelbottom=False)  # Hide x-axis labels
 
     # RMS
     ax_rms = plt.subplot(gs[2])
     ax_rms.plot(wave, 100*rms, 'o', color='r')
 
     # Label
-    ax_rms.set_xlabel('Wavelength (nm)')
     ax_rms.set_ylabel('Relative RMS (%)')
 
-    for ax in [ax_h1, ax_h2, ax_rms]:
+    for ax in [ax_g1, ax_g2, ax_rms]:
         plotting.set_fontsize(ax, 15.)
         ax.grid()
+        if layout == 'horizontal' or ax == ax_rms:
+            ax.set_xlabel('Wavelength (nm)')
     
     #
     plt.tight_layout()#pad=0.0, h_pad=0.0, w_pad=0.3)
@@ -119,7 +124,8 @@ def main(flg):
 
     # Spectra
     if flg == 1:
-        fig_qssa_coeffs()#, bbscl=20)
+        #fig_qssa_coeffs()#, bbscl=20)
+        fig_qssa_coeffs(layout='horizontal')#, bbscl=20)
 
 # Command line execution
 if __name__ == '__main__':
