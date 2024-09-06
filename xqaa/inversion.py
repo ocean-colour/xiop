@@ -14,9 +14,9 @@ def find_lambdar(wave:np.ndarray, rrs:np.ndarray):
     return 550. # nm
 '''
             
-def calc_Hcoeff(wave:np.ndarray, xparams:xqaa_params.XQAAParams):
+def calc_Gcoeff(wave:np.ndarray, xparams:xqaa_params.XQAAParams):
     """
-    Calculate the H1 and H2 coefficients using B-splines.
+    Calculate the G1 and G2 coefficients using B-splines.
 
     Parameters:
         wave (np.ndarray): Array of wave values.
@@ -29,10 +29,10 @@ def calc_Hcoeff(wave:np.ndarray, xparams:xqaa_params.XQAAParams):
     bspline_p1, bspline_p2 = load_qssa_bspline(xparams)
     
     # Evaulate the coefficients
-    H1 = bspline_p1(wave)
-    H2 = bspline_p2(wave)
+    G1 = bspline_p1(wave)
+    G2 = bspline_p2(wave)
 
-    return H1, H2
+    return G1, G2
 
 
 def quadratic(rrs:np.ndarray, 

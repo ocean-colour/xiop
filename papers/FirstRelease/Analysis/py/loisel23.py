@@ -7,13 +7,19 @@ from matplotlib import pyplot as plt
 from ocpy.hydrolight import loisel23
 from ocpy.utils import plotting
 
-from xiop import geometric as xiop_geom
-from xiop import inversion
+from xqaa import geometric as xiop_geom
+from xqaa import inversion
+from xqaa import params as xqaa_params
 
 from IPython import embed
 
 def stats(dataset:str='loisel23', extras:dict={'X':1, 'Y':0}, 
           bbnw_corr:str='none'):
+
+    # Parameters
+    xqaaParams = xqaa_params.XQAAParams()
+    xqaaParams.L23_X = extras['X']
+    xqaaParams.L23_Y = extras['Y']
 
     outfile = f'stats_{dataset}_{bbnw_corr}.png'
 
@@ -40,6 +46,7 @@ def stats(dataset:str='loisel23', extras:dict={'X':1, 'Y':0},
     roff_a = []
     roff_bb = []
 
+
     for idx in range(l23_Rrs.shape[0]):
         # 
         Rrs = l23_Rrs[idx]
@@ -50,15 +57,16 @@ def stats(dataset:str='loisel23', extras:dict={'X':1, 'Y':0},
         rrs = xiop_geom.rrs_from_Rrs(Rrs)
 
         # Coefficients
-        H1, H2 = inversion.calc_Hcoeff(l23_wave, dataset, extras)
-        D = inversion.quadratic(rrs, H1, H2)
+        G1, G2 = inversion.calc_Gcoeff(l23_wave, xqaaParams)
+        D = inversion.quadratic(rrs, G1, G2)
 
         bbnw = inversion.retrieve_bbnw(aw, bbw, D)
         if bbnw_corr == 'mean':
             corr_bbnw = np.nanmean(bbnw[avgbb_wvs])
-        elif bbnw_corr == 'pow':
+        elif 'pow' in bbnw_corr: 
+            exp = float(bbnw_corr[3:])
             avgbbnw = np.nanmean(bbnw[avgbb_wvs])
-            corr_bbnw = avgbbnw*(l23_wave/np.mean(l23_wave[avgbb_wvs]))**(-1)
+            corr_bbnw = avgbbnw*(l23_wave/np.mean(l23_wave[avgbb_wvs]))**(exp)
         elif bbnw_corr == 'none':
             corr_bbnw = 0.
         else:
@@ -82,9 +90,9 @@ def stats(dataset:str='loisel23', extras:dict={'X':1, 'Y':0},
     # Shwo simple histograms of each of these
     fig, axs = plt.subplots(1, 2, figsize=(10, 5))
     axs[0].hist(100*roff_a, bins=50, color='b', alpha=0.5)
-    axs[0].set_title('anw')
+    axs[0].set_title('anw: 400-450nm')
     axs[1].hist(100*roff_bb, bins=50, color='r', alpha=0.5)
-    axs[1].set_title('bbnw')
+    axs[1].set_title('bbnw: 600-750nm')
     # Text
     axs[0].text(0.95, 0.9, f'bbnw corr: {bbnw_corr}', 
                 transform=axs[0].transAxes, fontsize=15,
@@ -117,4 +125,5 @@ if __name__ == '__main__':
     # bbnw
     #stats()
     #stats(bbnw_corr='mean')
-    stats(bbnw_corr='pow')
+    stats(bbnw_corr='pow-1')
+    stats(bbnw_corr='pow-2')
