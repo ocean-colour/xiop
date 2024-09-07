@@ -41,8 +41,8 @@ def iops_from_Rrs(wave:np.ndarray, Rrs:np.ndarray,
     rrs = xqaa_geom.rrs_from_Rrs(Rrs)
 
     # Gordon Coefficients
-    H1, H2 = inversion.calc_Hcoeff(wave, xparams)
-    D = inversion.quadratic(rrs, H1, H2)
+    G1, G2 = inversion.calc_Gcoeff(wave, xparams)
+    D = inversion.quadratic(rrs, G1, G2)
 
     # bbnw
     bbnw = inversion.retrieve_bbnw(aw, bbw, D)
